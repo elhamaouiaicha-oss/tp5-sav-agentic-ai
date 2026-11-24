@@ -1,0 +1,22 @@
+# secrets
+.env
+*.key
+
+# environnements / caches Python
+.venv/
+venv/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# données générées (reconstruites par scripts/setup_demo.py)
+data/chroma/
+data/figures/
+data/garanties.db
+
+# OS / éditeurs
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

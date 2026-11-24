@@ -1,0 +1,23 @@
+flowchart TD
+    U(["Question + photo<br/>(capture d'écran)"]) --> O
+    subgraph LG["Graphe LangGraph — processus client"]
+        O{{"Orchestrateur"}}
+        subgraph D["Agent documentaire (dépanneur)"]
+            DL["LLM"] <--> DT["ToolNode"]
+        end
+        subgraph G["Agent garantie (vérificateur)"]
+            GL["LLM"] <--> GT["ToolNode"]
+        end
+        O -- "doc." --> D
+        O -- garantie --> G
+        D -- retour --> O
+        G -- retour --> O
+    end
+    O -- "réponse finale" --> E(["END"])
+    DT -- "client MCP · Streamable HTTP" --> S
+    subgraph MCP["Serveur MCP — processus séparé"]
+        S["outil distant rag_multimodal"] --> R["Agent RAG<br/>LLM + 3 outils de recherche"]
+    end
+    R --> C[("ChromaDB<br/>passages + figures")]
+    P["Manuels PDF"] -- "ingestion : texte + images" --> C
+    GT --> T["outil local consulter_garantie"] --> DB[("Registre SQLite<br/>lecture seule")]

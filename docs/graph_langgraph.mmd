@@ -1,0 +1,21 @@
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	orchestrateur(orchestrateur)
+	agent_documentaire(agent_documentaire)
+	agent_garantie(agent_garantie)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> orchestrateur;
+	agent_documentaire --> orchestrateur;
+	agent_garantie --> orchestrateur;
+	orchestrateur -.-> __end__;
+	orchestrateur -.-> agent_documentaire;
+	orchestrateur -.-> agent_garantie;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc
+
