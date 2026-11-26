@@ -34,7 +34,9 @@ PROMPT_DOCUMENTAIRE = """Tu es l'agent documentaire (dépannage) du service apr�
 Pour toute question technique, appelle l'outil `rag_multimodal` avec la question du client et,
 si la demande mentionne une photo (image_ref=...), transmets exactement cette référence.
 Fonde ta réponse uniquement sur le résultat de l'outil et conserve ses sources (manuel, page, figure).
-Si l'outil est indisponible ou ne trouve rien, dis-le honnêtement."""
+Si l'outil est indisponible ou ne trouve rien, dis-le honnêtement.
+Termine toujours par une ligne « Sources : » avec le manuel et les pages cités par l'outil.
+N'ajoute ni image ni lien Markdown."""
 
 PROMPT_GARANTIE = """Tu es l'agent vérificateur de garantie du service après-vente. Tu réponds en français.
 Extrais le numéro de série du message et appelle l'outil `consulter_garantie`.

@@ -2,7 +2,7 @@
 
 **Activité pratique n° 5 — IA agentique : service après-vente d'un distributeur d'appareils électroniques.**
 
-Réalisé par : *Nom Prénom* — Encadrant : *Pr. Mohamed YOUSSFI*
+Réalisé par : *Elhamaoui Aicha * — Encadrant : *Pr. Mohamed YOUSSFI*
 
 ## 1. Problème
 
@@ -64,7 +64,7 @@ Trajet attendu : `orchestrateur → agent_* → orchestrateur`.
 
 ## 4. Installation
 
-Prérequis : Python ≥ 3.11 (testé en 3.13), [`uv`](https://docs.astral.sh/uv/) recommandé.
+Prérequis : Python ≥ 3.11 (testé en 3.11 sous Windows), [`uv`](https://docs.astral.sh/uv/) recommandé.
 
 ```powershell
 git clone <url-du-depot>
@@ -96,12 +96,27 @@ uv run python -m sav.main            # mode interactif (photo : « img_px200_01:
 
 La CLI affiche le **trajet** dans le graphe, la **catégorie**, les **outils appelés**, puis la réponse.
 
-Exemple de trace (mode hors-ligne `LLM_MODEL=fake`, qui ne teste que le câblage — remplacez-la par une exécution avec votre LLM) :
+Exemple de trace avec `LLM_MODEL=ollama:qwen2.5:7b` :
+
+```
+[trajet]   orchestrateur -> agent_documentaire -> orchestrateur
+[catégorie] documentation   [agent] agent_documentaire   [outils] rag_multimodal
+```
 
 ```
 [trajet]   orchestrateur -> agent_garantie -> orchestrateur
 [catégorie] garantie   [agent] agent_garantie   [outils] consulter_garantie
 ```
+
+### Exécutions
+
+**Dépannage avec photo**
+
+![Exemple documentation](docs/exemple_documentation.png)
+
+**Vérification de garantie**
+
+![Exemple garantie](docs/exemple_garantie.png)
 
 Pour ajouter vos propres manuels : déposez des PDF dans `data/manuals/` et relancez `uv run python -m sav.rag.ingest` (idempotent).
 Autres numéros de série d'exemple : voir [`data/garanties.csv`](data/garanties.csv) (dont un cas expiré, `PX200-0007`).
@@ -112,14 +127,16 @@ Autres numéros de série d'exemple : voir [`data/garanties.csv`](data/garanties
 uv run pytest -q
 ```
 
-Les tests sont 100 % hors-ligne (LLM factice, embeddings `hash`) mais **exécutent le vrai serveur MCP** en sous-processus, le client MCP, l'agent RAG, ChromaDB, le registre SQLite et l'orchestrateur LangGraph :
+Les tests sont 100 % hors-ligne (LLM factice, embeddings `hash`) :
 
 * garantie : sous garantie / expirée / inconnue / entrée malveillante / base en lecture seule ;
 * RAG : indexation idempotente, passage « voyant orange clignotant », photo → Figure 1, références de photo dangereuses refusées, recherches parallèles ;
-* routage et trajet `orchestrateur → agent → orchestrateur` pour les deux exemples du sujet ;
-* message d'erreur clair si le serveur MCP est éteint.
+* routage des deux exemples du sujet ;
+* bout en bout (`tests/test_e2e_mcp.py`) : lance le vrai serveur MCP en sous-processus, puis vérifie le trajet `orchestrateur → agent → orchestrateur` pour les deux exemples du sujet, et le message d'erreur clair si le serveur MCP est éteint.
 
-**Non couvert par les tests automatiques** : la qualité des réponses d'un vrai LLM et la pertinence des plongements CLIP (qui nécessitent clé API / téléchargement de modèles). À vérifier manuellement avec les commandes ci-dessus.
+Résultat : 29 tests sous Linux ; **25 passés et 4 ignorés sous Windows**. Les 4 tests de bout en bout bloquent sur cette plateforme (cause non élucidée) ; le fonctionnement réel a été vérifié à la main avec Ollama (voir les captures plus haut).
+
+**Non couvert par les tests automatiques** : la qualité des réponses d'un vrai LLM et la pertinence des plongements CLIP (qui nécessitent un modèle et le téléchargement de CLIP). À vérifier manuellement avec les commandes de la section 5.
 
 ## 7. Choix de conception
 
